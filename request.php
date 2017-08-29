@@ -2,28 +2,29 @@
 header("Content-Type: text/html; charset=utf-8");
 require_once("main.php");
 
+define(__ROOT__, explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
+
 $db = database();
-require_once("Paypal.php");
-initPaypal();
+//require_once("Paypal.php");
+//initPaypal();
 require_once("Sendmail.php");
 
 function paied($email, $data, $payment){
-	(new Sendmail("vsevozmozhno@gmail.ru"))->setTheme("Зарегестрирован пользователь")->data(function() use($data, $payment){
+	(new Sendmail("orehov19@gmail.com"))->setTheme("Зарегестрирован пользователь | novosibconf.ru")->data(function() use($data, $payment){
 		?>
-		<h2>Новый пользователь зарегистрирован на <a href='http://все-возможно.рф/'>ВСЁВОЗМОЖНО.РФ</a></h2>
+		<h2>Новый пользователь зарегистрирован на <a href='<?=__ROOT__?>'>конференции тюремного служения</a></h2>
 		<h3>Данные пользователя:</h3>
 		<?=$data?>
 		<p><?=$payment?></p>
 		<?php
 	})->send();
 	
-	(new Sendmail($email))->setTheme("Регистрация на ВСЁВОЗМОЖНО")->data(function(){
+	(new Sendmail($email))->setTheme("Регистрация на Конференцию тюремного служения")->data(function(){
 		?>
-		<p>Поздравляем! Вы успешно зарегистрированы на конференцию "Всёвозможно". Мы ждем вас 23 сентября по адресу: г. Новокузнецк, ул. Орджоникидзе 35/2, церковь "Новоильинская". Начало регистрации в 09:00</p>
-		<p>Если у Вас возникнут дополнительные вопросы, Вы можете получить консультацию по телефонам:</p>
-		<p><a href='tel:89133127056'>+7 (913) 312-70-56</a> – Данил</p>
-		<p><a href='tel:89609234477'>+7 (960) 923-44-77</a> – Иван</p>
-		<p style='font-weight: bold;'>Обратите внимание! Разница во времени с Москвой + 4 часа.</p>
+		<p>Поздравляем!<br />Вы успешно зарегистрированы на <a href='<?=__ROOT__?>'>Конференцию тюремного служения</a></p>
+		<p>Мы ждем вас 20 сентября по адресу:<br />г. Новосибирск, ул. Оловозаводская, 1, церковь «Назарет».</p>
+		<p>Начало конференции в 10:00.</p>
+		<p>Дополнительная информация по телефону:<br /><a href='tel:+7 903 049-60-12 '>+7 903 049-60-12</a> (Леонид).</p>
 		<?php
 	})->send();
 }
@@ -32,7 +33,7 @@ function paied($email, $data, $payment){
 if(isset($_GET["request"])){
 	$request = $db->query("SELECT * FROM `request` WHERE `hash` = '".$db->real_escape_string($_GET["request"])."'");
 }
-elseif(isset($_GET["paymentId"])){
+else/*if(isset($_GET["paymentId"])){
 	$payment = new Payment(
 		new Paypal(),
 		$_GET["paymentId"]
@@ -47,7 +48,7 @@ elseif(isset($_GET["paymentId"])){
 		exit();
 	}
 	
-	paied($request["email"], $request["data"], "Произведена оплата в размере {$payment->amount} руб.");
+	paied($request["email"], $request["data"], "Произведена оплата в размере <b>{$payment->amount} руб.</b>");
 }
 elseif(isset($_POST["notification_type"])){
 	if(sha1($_POST["notification_type"] ."&". $_POST["operation_id"] ."&". $_POST["amount"] ."&". $_POST["currency"] ."&". $_POST["datetime"] ."&". $_POST["sender"] ."&". $_POST["codepro"] ."&". "BuoPcUSZ3jE92Nit9yA49jS0" ."&". $_POST["label"]) != $_POST["sha1_hash"]){
@@ -60,13 +61,13 @@ elseif(isset($_POST["notification_type"])){
 		($request = $request->fetch_assoc())
 	){
 		$db->query("UPDATE `request` SET `payment` = 'paied-".floor($_POST["withdraw_amount"])."' WHERE `id` = $matches[1]");
-		paied($request["email"], $request["data"], "Произведена оплата в размере {$_POST["withdraw_amount"]} руб.");
+		paied($request["email"], $request["data"], "Произведена оплата в размере <b>{$_POST["withdraw_amount"]}</b> руб.");
 	}
 	die();
 }
-else{
+else*/{
 	$info = [];
-	if(!$_POST["name"] || !$_POST["phone"] || !$_POST["email"] || !$_POST["Город"] || !$_POST["Церковь"]){
+	if(!$_POST["name"] || !$_POST["phone"] || !$_POST["email"] || !$_POST["Город"]){
 		die("Не указано одно из обязательных полей <script>history.back();</script>");
 	}
 
@@ -96,12 +97,13 @@ else{
 	$hash = sha1($info);
 		
 	if(!($request = $db->query("SELECT * FROM `request` WHERE `hash`='$hash'")->fetch_assoc())){
-		if(time() < 1472576399 && $_POST["payment"] == 500) $price = 500;
-		elseif(time() < 1474390799 && $_POST["payment"] == 600) $price = 600;
-		else{
-			$price = 0;
-			paied($_POST["email"], $info, "Оплата на месте в размере <b>700 руб.</b>");
-		}
+		//if(time() < 1472576399 && $_POST["payment"] == 500) $price = 500;
+		//elseif(time() < 1474390799 && $_POST["payment"] == 600) $price = 600;
+		//else{
+		if (time() < strtotime('10.09.2017')) $price = 1800;
+		else $price = 2000;
+		paied($_POST["email"], $info, "Оплата на месте в размере <b>$price руб.</b>");
+		//}
 		
 		$info = $db->real_escape_string($info);
 		$email = $db->real_escape_string($_POST["email"]);
@@ -109,13 +111,12 @@ else{
 		
 		$db->query("INSERT INTO `request` (`email`, `data`, `payment`, `hash`) VALUES ('$email', '$info', '$method-$price', '$hash')") or die($db->error);
 		$request = $db->insert_id;
-		$_SESSION["requests"][$request] = true;
 		$request = $db->query("SELECT * FROM `request` WHERE `id` = $request")->fetch_assoc();
 		
 		(new Sendmail($request["email"]))->setTheme("Всёвозможно - Начало регистрации")->data(function() use($request){
 			?>
-			<p>Вы начали регистрацию на <a href='http://все-возможно.рф'>ВСЁВОЗМОЖНО</a>.</p>
-			<p>Чтобы оплатить заявку или просмотреть информацию о ней, вы можете перейти по ссылке <a href='http://все-возможно.рф/request.php?request=<?=$request["hash"]?>'>http://все-возможно.рф/request.php?request=<?=$request["hash"]?></a></p>
+			<p>Вы начали регистрацию на <a href='<?=__ROOT__?>'>Конференцию тюремного служения</a>.</p>
+			<p>Информация о вашей заявке доступна на странице: <a href='<?=__ROOT__?>/request.php?request=<?=$request["hash"]?>'><?=__ROOT__?>/request.php?request=<?=$request["hash"]?></a></p>
 			<?php
 		})->send();
 	}
@@ -157,7 +158,7 @@ if(is_array($request) || ($request = $request->fetch_assoc())){
 				<input type="hidden" name="quickpay-form" value="donate"> 
 				<input type="hidden" name="targets" value="Оплата заявки №<?=$request["id"]?>"> 
 				<input type="hidden" name="sum" value="<?=$matches[2]?>" data-type="number"> 
-				<input type="hidden" name="successURL" value="http://все-возможно.рф/requests.php"> 
+				<input type="hidden" name="successURL" value="<?=__ROOT__?>/requests.php"> 
 				<input type="hidden" name="need-fio" value="false"> 
 				<input type="hidden" name="need-email" value="false"> 
 				<input type="hidden" name="need-phone" value="false"> 
@@ -176,7 +177,7 @@ if(is_array($request) || ($request = $request->fetch_assoc())){
 		header("Location: {$payment->urls["approval_url"]}");
 		die();
 	} else{
-		$_SESSION["requests"][$request["id"]] = true;
+		$_SESSION["requests"][] =  $request["id"];
 		header("Location: /requests.php");
 		die();
 	}
@@ -185,4 +186,3 @@ if(is_array($request) || ($request = $request->fetch_assoc())){
 	echo "<div class='wrapper'><div>Заявка не найдена.</div></div>";
 	template_bottom();
 }
-?>

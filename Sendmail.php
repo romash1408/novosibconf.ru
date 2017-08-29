@@ -6,7 +6,7 @@ class Sendmail{
 			$headers = [
 				'MIME-Version' => '1.0',
 				'Content-type' => 'text/html; charset="windows-utf-8"',
-				'From' => 'info@xn----ctbbkhf9ajfcc0a.xn--p1ai',
+				'From' => 'info@novosibconf.ru',
 			];
 	
 	public function __construct($dest = "")

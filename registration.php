@@ -4,7 +4,7 @@ template_top();
 ?>
 <div id='registration' class='wrapper'>
 	<div>
-		<h2>Регистрация</h2>
+		<div><h2>Регистрация</h2></div>
 		<form action='request.php' method='POST' class='form-horizontal'>
 			<div class='form-group'>
 				<label class='col-xs-4 control-label' for='name'>ФИО<span style='color:#B44'>*</span>:</label>
@@ -31,32 +31,6 @@ template_top();
 				</div>
 			</div>
 			<div class='form-group'>
-				<label class='col-xs-4 control-label' for='Церковь'>Ваша церковь<span style='color:#B44'>*</span>:</label>
-				<div class='col-xs-8'>
-					<input name='Церковь' placeholder='Название церкви' class='form-control' required />
-				</div>
-			</div>
-			<div class='form-group'>
-				<label class='col-xs-4 control-label' for='Организация'>Название реабилитационного центра или организации:</label>
-				<div class='col-xs-8'>
-					<input name='Организация' placeholder='например, Благотворительный фонд социальный реабилитации граждан «Источник Жизни»' class='form-control' />
-				</div>
-			</div>
-			<div class='form-group'>
-				<label class='col-xs-4 control-label' for='Ваша_должность_в_реабцентре'>Ваша должность<span style='color:#B44'>*</span>:</label>
-				<div class='col-xs-8'>
-					<select name='Должность' class='form-control  selectInputWithAnother'>
-						<option>Директор</option>
-						<option>Работник</option>
-						<option>Волонтёр</option>
-						<option>Другое</option>
-					</select>
-				</div>
-				<div class="col-xs-8" style='float: right; margin-top: 10px;' >
-					<input type='text' id='ДолжностьText' name='Должность' class='form-control'  placeholder='Ваша должность в организации' />
-				</div>
-			</div>
-			<div class='form-group'>
 				<label class='col-xs-4 control-label' for='Узнали_о_конференции'>Как вы узнали о Конференции?<span style='color:#B44'>*</span>:</label>
 				<div class='col-xs-8'>
 					<select name='Узнали_о_конференции' class='form-control selectInputWithAnother'>
@@ -67,44 +41,22 @@ template_top();
 						<option>Другое</option>
 					</select>
 				</div>
-				<div class="col-xs-8" style='float: right; margin-top: 10px;' >
+				<div class="col-xs-8" style='float: right; margin-top: 10px;display: none;' >
 					<input type='text' id='Узнали_о_конференцииText' name='Узнали_о_конференции' class='form-control'  placeholder='Как вы узнали о Конференции?' />
 				</div>
 			</div>
 			<div class='form-group'>
-				<div class='col-xs-offset-4 col-xs-8'>
-					<div class='checkbox'>
-						<label>
-							<input name='Необходимо_расселение' type='checkbox' value='1'/> Необходимо ли вам расселение?
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class='form-group'>
-				<div class='col-xs-offset-4 col-xs-8'>
-					<div class='checkbox'>
-						<label>
-							<input name='Необходимы_диски_с_виедо' type='checkbox' value='1' /> Хотели бы вы приобрести диски с видео сразу после конференции?
-						</label>
-					</div>
-				</div>	
-			</div>
-			<div class='form-group'>
-				<label class='col-xs-4 control-label' for='Дата_приезда'>Дата вашего приезда:</label>
+				<label class='col-xs-4 control-label' for='Город'>Необходимо ли вам расселение?</label>
 				<div class='col-xs-8'>
-					<input name='Дата_приезда' type='datetime-local' value='2016-09-23T08:00:00' class='form-control' />
+					<label class="radio-inline">
+						<input type="radio" name="Необходимо_расселение" value="Да"> Да
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="Необходимо_расселение" value="Нет" checked> Нет
+					</label>
 				</div>
 			</div>
-			<div class='form-group'>
-				<div class='col-xs-offset-4 col-xs-8'>
-					<div class='checkbox'>
-						<label>
-							<input name='С детьми' type='checkbox' value='1' />Будут ли с вами дети?
-						</label>
-					</div>
-				</div>	
-			</div>
-			<div class='form-group'>
+			<!--div class='form-group'>
 				<label class='col-xs-4 control-label'>Оплата:</label>
 				<div class='col-xs-8'>
 					<select name='payment' class='form-control'>
@@ -113,7 +65,9 @@ template_top();
 						<option value="700">700 рублей (на месте)</option>
 					</select>
 				</div>
-			</div>
+			</div-->
+			
+			<!-- Поле pay_method нужно для БД-->
 			<div class='form-group' style='display: none;' id='pay_method'>
 				<label class='col-xs-4 control-label'>Способ оплаты:</label>
 				<div class='col-xs-8'>
@@ -121,7 +75,7 @@ template_top();
 						<option value="card" selected>Банковская карта</option>
 						<option value="paypal">PayPal</option>
 					</select>
-					<input type='hidden' name='pay_method' value='card' />
+					<input type='hidden' name='pay_method' value='place' />
 				</div>
 			</div>
 			<div class='form-group'>
@@ -154,7 +108,6 @@ template_top();
 				if($("#registration [name='phone']").val() == "") errors = errors + "Не заполнено поле \"Контактный номер\"\n";
 				if($("#registration [name='email']").val() == "") errors = errors + "Не заполнено поле \"E-mail\"\n";
 				if($("#registration [name='Город']").val() == "") errors = errors + "Не заполнено поле \"Город\"\n";
-				if($("#registration [name='Церковь']").val() == "") errors = errors + "Не заполнено поле \"Церковь\"\n";
 				if(errors != ""){
 					event.preventDefault();
 					alert(errors);

@@ -1,13 +1,35 @@
-body.mobile{
-	padding-top: 0;
+p,h1,h2,h3,h4,h5,h6{margin: 0}
+
+.btn01{
+	display: inline-block;
+	font-size: 20px;
+	line-height: 1;
+	padding: 9px 20px;
+	font-weight: bold;
+	text-align: center;
+	background-color: rgba(239, 198, 48, 0.00);
+	color: #222220;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.3s, color 0.3s;
+	border: 3px solid #efc630;
 }
-body.mobile header{
-	position: relative;
+
+.btn01:hover{
+	background-color: rgba(239, 198, 48, 1.00);
+	color: white;
+	text-decoration: none;
 }
-body.mobile .wrapper{
-	margin-top: 0;
-	padding-top: 0;
+
+.clear:before{
+	content: "";
+	display: block;
+	clear: both;
 }
+
+.logo .st1{fill:#6077b3;}
+.logo .st2{fill:#efc630;}
+.logo .st3{fill:currentColor;}
 
 body{
 	position: absolute;
@@ -16,15 +38,13 @@ body{
 	min-height: 100%;
 	overflow: auto;
 	margin: 0;
-	font-family: Muller;
-	padding-top: 60px;
+	font-family: 'Muller';
+	padding-top: 63px;
 	padding-bottom: 102px;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
-
-p,h1,h2,h3,h4,h5,h6{margin: 0}
 
 .wrapper{
 	background-size: cover;
@@ -47,26 +67,18 @@ p,h1,h2,h3,h4,h5,h6{margin: 0}
     padding-top: 0.1px;
     padding-bottom: 0.1px;
 }
-.wrapper>div>h2{
+
+.wrapper>div>div>h2{
+	display: inline-block;
 	clear: both;
 	margin-bottom: 30px;
 	font-weight: bold;
-	font-size: 27pt;
-	color: #3E3E3D;
+	font-size: 24px;
+	color: #222220;
 	text-transform: uppercase;
-	margin-top: -60px;
-	padding-top: 90px;
-}
-.wrapper>div>h2:before{
-	content: "";
-	display: inline-block;
-	vertical-align: middle;
-	width: 48px;
-	height: 10px;
-	background: linear-gradient(46deg, rgb(229,28,32), rgb(190,40,52));
-	margin: 0 12px 0 -12px;
-	-webkit-transform: translateY(-25%);
-	transform: translateY(-25%);
+	margin-top: 30px;
+	padding: 16px 28px;
+	background-color: #efc630;
 }
 
 header{
@@ -74,12 +86,13 @@ header{
 	top: 0;
 	width: 100%;
 	overflow: auto;
-	height: 60px;
+	height: 63px;
 	background: white;
 	font-weight: 100;
 	z-index: 50;
 	box-shadow: 0 0 15px 0 rgba(0,0,0,0.3);
 }
+
 header>div{
 	min-width: 960px;
 }
@@ -87,128 +100,113 @@ header>div{
 .mainlogo{
 	float: left;
 	border: none;
-    margin-left: -90px;
 	outline: none;
+	margin: 9px 11px 5px 0;
+	color: #222220
 }
+
 .mainlogo img{
-	width: 300px;
-	height: 60px;
+	height: 42px;
 }
+
 .mainmenu{
 	float: left;
 	width: 54%;
-	font-size: 12pt;
-	margin: 0 2%;
+	font-size: 16px;
+	margin: 0 1%;
 }
 
 .mainmenu>a{
 	display: inline-block;
 	color: #222220;
 	width: 24.4%;
-	line-height: 60px;
+	line-height: 63px;
 	text-align: center;
 	vertical-align: top;
-	transition: color 1s;
+	transition: color 0.3s;
 }
 
-.mainmenu>a:hover{
-	color: rgb(227, 6, 19);
+.mainmenu>a>span{
+	border-bottom: 1px solid;
 }
 
 header .phone{
-	font-size: 12pt;
+	font-size: 16px;
     color: #222220;
-    text-decoration: none;
-    line-height: 30px;
+    line-height: 63px;
     float: right;
+	transition: color 0.3s;
 }
 
 #start{
-	background-image: url('/images/start.jpg');
-	color: white;
+	background: white;
+	color: #222220;
 	text-align: center;
-}
-
-#start .timer{
-	font-size: 8pt;
-	width: 160px;
-	padding-top: 23px;
-	margin-left: calc(100% - 160px);
+	border: 40px solid #6077b3;
+	outline : 30px solid #efc630;
+	margin: 30px;
+	padding: 30px 15px;
 }
 
 #start h1{
-	font-size: 50pt;
-	font-family: 'Muller-Medium';
+	position: relative;
+	font-size: 54px;
+	font-weight: 500;
 	text-transform: uppercase;
 	margin-bottom: 30px;
 }
 
-#start p{
-	font-size: 18pt;
-	font-family: 'Muller-Medium';
-    width: 450px;
-    margin: 0 auto;
-	margin-bottom: 30px;
-	line-height: 24px;
-}
 #start h1>.vertical{
 	position: absolute;
-    line-height: 12.324px;
-	padding-top: 3px;
-	width: 65px;
+	padding: 5px 10px 3px;
 	text-align: center;
-    font-size: 8pt;
-    background: #C20B19;
-    -webkit-transform: translateX(-52%) rotate(-90deg) translateX(-30%);
-    transform: translateX(-52%) rotate(-90deg) translateX(-30%);
+    font-size: 16px;
+	line-height: 1;
+	background: #efc630;
+	top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
 }
 
-a.button{
-    clear: both;
-    display: block;
-	background-image: url('/images/startBtn.png');
-	width: 189px;
-	line-height: 30px;
-	margin: 0 auto 35px;
-	font-size: 10pt;
-	text-align: center;
-	color: white;
-	text-decoration: none;
-	cursor: pointer;
-	transition: 1s;
+#start p.txt01{
+	font-size: 32px;
+	margin-bottom: 45px;
 }
-
-a.button:hover{
-	-webkit-filter: brightness(0.8);
-	filter: brightness(0.8);
+#start p.txt02{
+	font-size: 40px;
+	font-weight: bold;
+	margin-bottom: 64px;
 }
 
 #about{
-	
+	padding-bottom: 60px;
+}
+
+#about h2{
+	background-color: #6077b3;
+	color: white;
 }
 
 #about p{
+	position: relative;
 	float: left;
 	width: 33%;
-	min-height: 60px;
-	font-size: 12pt;
-	color: #3E3E3D;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
+	min-height: 72px;
+	font-size: 18px;
+	color: #222220;
 	box-sizing: border-box;
-	padding-top: 7px;
-	padding-left: 40px;
-	padding-right: 70px;
-	background: url('/images/slash.png') no-repeat;
-	margin-bottom: 30px;
+	padding-left: 28px;
+	padding-right: 28px;
 }
 
-#about:after, #speakers:after, #speakers2:after, #data:after{
+#about p:after{
 	content: "";
 	display: block;
-	height: 3px;
-	width: 100%;
-	background: linear-gradient(90deg, #C52925 50%, #2C2C5A);
+	width: 11px;
+	height: 62px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #efc630;
 }
 
 #speakers{
@@ -219,13 +217,10 @@ speaker{
 	position: relative;
 	float: left;
 	width: 25%;
-	height: 250px;
 	margin-top: 45px;
 	text-align: center;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-    padding: 0 calc(12.5% - 97px);
+    padding: 0 15px;
     letter-spacing: -0.16px;
 	line-height: 15px;
 }
@@ -235,35 +230,23 @@ speaker img{
 	filter: grayscale(100%);
 	transition: 1s;
 }
+
 speaker:hover img{
 	-webkit-filter: grayscale(0);
 	filter: grayscale(0);
 }
 
-speaker:before{
-	content: "";
-	position: absolute;
-	width: 80%;
-	left: 10%;
-	height: 10px;
-	background: linear-gradient(46deg, rgb(229,28,32), rgb(190,40,52));
-	z-index: -1;
-}
-
-speaker:nth-of-type(2n+0):before{top: 50%}
-speaker:nth-of-type(2n+1):before{top: 20%}
-
 speaker h5{
 	color: #3E3E3D;
 	font-weight: normal;
-	font-size: 12pt;
+	font-size: 16px;
 	margin: 10px 0;
 }
 
 speaker p{
 	color: #3E3E3D;
 	font-weight: normal;
-	font-size: 10pt;
+	font-size: 14px;
 }
 
 #speakers2 speaker{
@@ -285,49 +268,53 @@ speaker p{
 	width: 50%;
 	float: left;
 	margin-bottom: 20px;
-	padding-left: 11%;
-	padding-left: calc(10% + 7px);
+	font-size: 22px;
+	padding-left: 13%;
+	color: #222220;
 }
 
 #data .info label{
 	position: absolute;
 	left: 0;
-	width: 20%;
-	color: #C20B19;
+	width: 18%;
+	color: #6077b3;
 	text-align: right;
-	font-size: 15pt;
-	font-weight: 100;
-}
-#data .info span{
-	color: #222220;
-	line-height: 22px;
-	font-size: 15pt;
-	font-family: 'Muller-Medium';
-}
-
-#data .payment{
-	float: left;
-	padding-left: 10%;
-	width: 33.33%;
-	margin-bottom: 65px;
-}
-
-#data .payment label{
-	display: block;
-	font-size: 50pt;
-	font-family: 'Muller-Medium';
-	color: rgb(154,154,154);
-}
-#data .payment.active label{
-	color: rgb(233,0,21);
-}
-
-#map{
-	padding-top: 35px;
+	font-weight: normal;
 }
 
 #registration{
 	position: relative;
+	margin-bottom: 30px;
+}
+
+#registration h2{
+	background-color: #6077b3;
+	color: white;
+}
+
+#registration .payment{
+	float: left;
+	padding-left: 6%;
+	width: 33.33%;
+}
+
+#registration .payment label{
+	display: block;
+	font-size: 59px;
+	font-weight: bold;
+	color: #222220;
+}
+
+#registration .payment span{
+	color: #6077b3
+}
+
+#registration .btn01{
+	margin-top: 65px;
+}
+
+#map{
+	padding-top: 35px;
 }
 
 footer{
@@ -337,4 +324,43 @@ footer{
 	height: 102px;
 	background-color: #3E3E3D;
 	padding: 25px 0;
+}
+
+footer a{
+	line-height: 42px;
+	color: white;
+}
+
+a{
+	transition: color 0.3s;
+}
+
+a:hover, a:focus{
+	color: #efc630;
+	text-decoration: none;
+}
+
+.radio-inline input[type="radio"]{
+	margin-top: 0;
+}
+
+.radio-inline + .radio-inline:before{
+	content: '/ ';
+	display: inline-block;
+	position: absolute;
+	right: 100%;
+	padding-right: 3px;
+}
+
+@media (max-width: 1000px){
+	body{
+		padding-top: 0;
+	}
+	body header{
+		position: relative;
+	}
+	body .wrapper{
+		margin-top: 0;
+		padding-top: 0;
+	}
 }

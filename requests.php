@@ -1,23 +1,30 @@
 <?php
 require_once("main.php");
 require_once("Paypal.php");
+require_once("Sendmail.php");
+
+define(__ROOT__, explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
 
 $db = database();
 template_top();
 ?>
 <div id='requests' class='wrapper'>
 	<div>
-		<h2>Ваши заявки</h2>
+		<div>
+			<h2>Ваши заявки</h2>
+		</div>
 		<?php
-		if(!is_array($_SESSION["requests"])) $_SESSION["requests"] = [];
 		if(isset($_GET["administrat"])){
 			$requests = [];
-			$req = $db->query("SELECT `id` FROM `request` ORDER BY `created` DESC");
-			while($next = $req->fetch_assoc()) $requests[$next["id"]] = true;
+			$req = $db->query("SELECT `id` FROM `request` ORDER BY `id` ASC");
+			while($next = $req->fetch_assoc()) $requests[] = $next["id"];
 		}
 		else $requests = $_SESSION["requests"];
-		foreach($requests as $request => $bar)
-			if($request = $db->query("SELECT * FROM `request` WHERE `id` = $request")->fetch_assoc()){
+
+		for ($i = count($requests) - 1; $i >= 0; --$i) {
+			$request = $db->query("SELECT * FROM `request` WHERE `id` = {$requests[$i]}");
+			if ($request) {
+				$request = $request->fetch_assoc();
 				$found = true;
 				echo "<div style='margin-bottom: 30px;'>" .
 					"<h3>Заявка №$request[id]</h3>" .
@@ -36,16 +43,42 @@ template_top();
 						echo "Оплата отменена.";
 					}
 				}
-				elseif(preg_match("/^([a-z]+)-([0-9]+)/", $request["payment"], $matches) && $matches[2] > 0){
-					if($matches[1] == "paied") echo "Оплачено $matches[2] р.";
+				elseif(preg_match("/^([a-z]+)-([0-9]+)/", $request["payment"], $matches) && $matches[1] != "place"){
+					if($matches[1] == "paied"){
+						echo "Оплачено $matches[2] р.";
+						if(isset($_POST["sendmail"])){
+							(new Sendmail("spam@romash1408.ru"))->setTheme("Зарегестрирован пользователь")->data(function() use($request, $matches){
+								?>
+								<h2>Новый пользователь зарегистрирован на <a href='<?=__ROOT__?>/'>Конференцию тюремного служения</a></h2>
+								<h3>Данные пользователя:</h3>
+								<?=$request["data"]?>
+								<p><?="Произведена оплата в размере <b>$matches[2] руб.</b>"?></p>
+								<?php
+							})->send();
+						}
+					}
 					else echo "<a href='/request.php?request=$request[hash]'>Оплатить $matches[2] р. (".($matches[1]=="card" ? "банковская карта" : "Paypal").")</a>";
 				}
-				else echo "Оплата 700 р. (на месте)";
+				else{
+					echo "Оплата $matches[2] р. (на месте)";
+					if(isset($_POST["sendmail"])){
+						(new Sendmail("spam@romash1408.ru"))->setTheme("Зарегестрирован пользователь")->data(function() use($request, $matches){
+							?>
+							<h2>Новый пользователь зарегистрирован на <a href='<?=__ROOT__?>/'>Конференцию тюремного служения</a></h2>
+							<h3>Данные пользователя:</h3>
+							<?=$request["data"]?>
+							<p><?="Оплата на месте в размере <b>$matches[2] руб.</b>"?></p>
+							<?php
+						})->send();
+					}
+				}
 					
 				
 				echo "</div>" .
 				"</div>";
 			}
+		}
+
 		if(!$found) echo "Вы ещё не подали заявок.";
 		?>
 	</div>

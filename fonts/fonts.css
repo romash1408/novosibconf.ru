@@ -20,7 +20,9 @@
 	font-style: normal;
 }
 @font-face{
-	font-family: 'Muller-Medium';
+	font-family: 'Muller';
 	src: url('Muller-Medium.eot');
 	src: local('☺'), url('Muller-Medium.woff') format('woff'), url('Muller-Medium.ttf') format('truetype'), url('Muller-Medium.svg') format('svg');
+	font-weight: 500;
+	font-style: normal;
 }
