@@ -45,6 +45,7 @@ function template_bottom(){
 					<div style='float: right'>
 						<a class='phone' href='tel:89133127056'>+7 903 049-60-12</a>
 					</div>
+					<div><small>Организатор конференции: Местная религиозная организация христиан веры евангельской "Назарет", г. Новосибирск</small></div>
 				</div>
 			</footer>
 			<script src='/js/jquery-2_1_1_min.js'></script>
