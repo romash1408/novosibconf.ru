@@ -1,7 +1,7 @@
 <?php
-require_once("main.php");
-require_once("Paypal.php");
-require_once("Sendmail.php");
+require_once("../main.php");
+require_once("../Paypal.php");
+require_once("../Sendmail.php");
 
 define(__ROOT__, explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
 

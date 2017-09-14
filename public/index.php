@@ -1,5 +1,5 @@
 <?php
-require_once("main.php");
+require_once("../main.php");
 template_top();
 ?>
 <div id='start' class='wrapper'>
