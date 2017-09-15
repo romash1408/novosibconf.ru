@@ -1,9 +1,13 @@
 <?php
+
+echo "<pre>";
+print_r($_SERVER);
+die();
 require_once("../main.php");
 require_once("../Paypal.php");
 require_once("../Sendmail.php");
 
-define(__ROOT__, explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
+define('__ROOT__', explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
 
 $db = database();
 template_top();

@@ -2,7 +2,7 @@
 header("Content-Type: text/html; charset=utf-8");
 require_once("../main.php");
 
-define(__ROOT__, explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
+define('__ROOT__', explode(":", $_SERVER["HTTP_REFERER"], 2)[0] . '://' . $_SERVER["HTTP_HOST"]);
 
 $db = database();
 //require_once("../Paypal.php");
