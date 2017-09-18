@@ -1,18 +1,39 @@
 <?php
+
 session_start();
-if(!is_array($_SESSION["requests"])) $_SESSION["requests"] = [];
+
+if (!is_array($_SESSION["requests"]))
+{
+	$_SESSION["requests"] = [];
+}
+
 $_SCRIPTS = array();
 
 define("CONF", include("config.php"));
+define("INFO", CONF["project_info"]);
 
-function template_top(){
+$protocol = (
+	isset($_SERVER["HTTP_REFERER"]) ?
+	explode(":", $_SERVER["HTTP_REFERER"], 2)[0] :
+	"http"
+);
+define('__ROOT__', "$protocol://$_SERVER[HTTP_HOST]");
+
+function m_array_first(&$arr)
+{
+	list($key) = array_keys($arr);
+	return $arr[$key];
+}
+
+function template_top()
+{
 	?>
 	<!DOCTYPE html>
 	<html>
 		<head>
 			<meta charset='UTF-8' />
 			<meta name='viewport' content='width=device-width' />
-			<title>Конференция тюремного служения</title>
+			<title><?=INFO["title"]?></title>
 			<link async href="/favicon.ico" rel="shortcut icon" />
 			<link async type="text/css" rel='stylesheet' href='/fonts/fonts.css' />
 			<link async type="text/css" rel='stylesheet' href='/css/bootstrap.css' />
@@ -30,7 +51,7 @@ function template_top(){
 						<a href='/##data' data-anchor='#data'><span>Расписание</span></a>
 						<a href='/##registration' data-anchor='#registration'><span>Регистрация</span></a>
 					</div>
-					<a class='phone' href='tel:89133127056'>+7 903 049-60-12</a>
+					<a class='phone' href='tel:<?=m_array_first(INFO["phones"])?>'><?=m_array_first(INFO["phones"])?></a>
 				</div>
 			</header>
 	<?php
@@ -43,9 +64,9 @@ function template_bottom(){
 				<div>
 					<a href='/'><?=file_get_contents("img/logo.svg")?></a>
 					<div style='float: right'>
-						<a class='phone' href='tel:89133127056'>+7 903 049-60-12</a>
+						<a class='phone' href='tel:<?=m_array_first(INFO["phones"])?>'><?=m_array_first(INFO["phones"])?></a>
 					</div>
-					<div><small>Организатор конференции: Местная религиозная организация христиан веры евангельской "Назарет", г. Новосибирск</small></div>
+					<div><small><?=INFO["footer_info"]?></small></div>
 				</div>
 			</footer>
 			<script src='/js/jquery-2_1_1_min.js'></script>
@@ -58,8 +79,12 @@ function template_bottom(){
 					case "object": echo "</script>"; $script(); echo "<script>"; break;
 					case "array": echo 
 					"</script>
-						<script ".implode(" ", array_map(function($attr, $value){return $attr . ($value != "" ? "='$value'" : "");}, array_keys($script), $script)).">
-					<script>";
+					<script " .
+						implode(" ", array_map(function ($attr, $value)
+						{
+							return $attr . ($value != "" ? "='$value'" : "");
+						}, array_keys($script), $script)) . 
+					"> <script>";
 				}
 			}
 			?>
@@ -82,13 +107,4 @@ function database(){
 	return $db;
 }
 
-function initPaypal(){
-	Paypal::init([
-		"sandbox" => "",
-        "sandbox.id" => "",
-        "sandbox.secret" => "",
-		"id" => "",
-		"secret" => ""
-	]);
-}
 ?>

@@ -5,5 +5,8 @@ return [
 		"db" => "novosibconf",
 		"user" => "root",
 		"password" => ""
-	]
+	],
+	"project_info" => include("projects/jail2017"),
+	"password" => "test",
+];
 ];

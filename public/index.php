@@ -2,9 +2,10 @@
 require_once("../main.php");
 template_top();
 ?>
+
 <div id='start' class='wrapper'>
 	<div>
-		<h1>20&nbsp;&nbsp;<span class='vertical'>сентября</span>&nbsp;&nbsp;21</h1>
+		<h1><?=INFO["start"]["day"]?>&nbsp;&nbsp;<span class='vertical'><?=INFO["start"]["month"]?></span>&nbsp;&nbsp;<?=INFO["finish"]["day"]?></h1>
 		<p class='txt01'>ОБЩЕРОССИЙСКАЯ КОНФЕРЕНЦИЯ<br />ТЮРЕМНОГО СЛУЖЕНИЯ</p>
 		<p class='txt02'>ПРАКТИЧЕСКАЯ РАБОТА<br />В ИСПРАВИТЕЛЬНЫХ КОЛОНИЯХ.<br />ПРАКТИЧЕСКАЯ ДЕЯТЕЛЬНОСТЬ<br />И РАБОТА С ФСИН.</p>
 		<a href='/registration.php' class='btn01'>Зарегистрироваться</a>
@@ -71,10 +72,35 @@ template_top();
 <div id='data' class='wrapper'>
 	<div>
 		<div><h2 id='infoAnchor'>Когда и где</h2></div>
-		<div class='info'><label>Когда:</label><span>20 - 21  сентября</span></div>
-		<div class='info'><label>Старт:</label><span>20 сентября, 10:00 - 19:00</span></div>
-		<div class='info'><label>Где:</label><span>г.&nbsp;Новосибирск, ул.&nbsp;Оловозаводская, 1</span></div>
-		<div class='info'><label>Финиш:</label><span>21 сентября, 09:00 - 17:00</span></div>
+		<div class='info'>
+			<label>Когда:</label>
+			<span>
+				<?=INFO["start"]["day"]?>
+				<?(INFO["start"]["month"] != INFO["finish"]["month"] ? INFO["start"]["month"] : "")?>-
+				<?=INFO["finish"]["day"]?>
+				<?=INFO["finish"]["month"]?>
+			</span>
+		</div>
+		<div class='info'>
+			<label>Старт:</label>
+			<span>
+				<?=INFO["start"]["day"]?>
+				<?=INFO["start"]["month"]?>,
+				<?=INFO["start"]["time"]?>
+			</span>
+		</div>
+		<div class='info'>
+			<label>Где:</label>
+			<span><?=INFO["address"]?></span>
+		</div>
+		<div class='info'>
+			<label>Финиш:</label>
+			<span>
+				<?=INFO["finish"]["day"]?>
+				<?=INFO["finish"]["month"]?>,
+				<?=INFO["finish"]["time"]?>
+			</span>
+		</div>
 	</div>
 </div>
 

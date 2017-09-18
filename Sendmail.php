@@ -1,17 +1,28 @@
 <?php
 class Sendmail{
-	private $dest = [],
-			$theme = "Всёвозможно - информацинное сообщение",
-			$data = "",
+	private $dest,
+			$theme,
+			$data,
+			$from,
 			$headers = [
 				'MIME-Version' => '1.0',
 				'Content-type' => 'text/html; charset="windows-utf-8"',
-				'From' => 'info@novosibconf.ru',
 			];
 	
 	public function __construct($dest = "")
 	{
-		if($dest) $this->dest[] = $dest;
+		if (is_array($dest))
+		{
+			$this->dest = $dest;
+
+		} else {
+
+			$this->dest = [];
+			if (!empty($dest))
+			{
+				$this->dest[] = $dest;
+			}
+		}
 	}
 	
 	public function clearDestonation()
@@ -31,24 +42,34 @@ class Sendmail{
 		$this->theme = $theme;
 		return $this;
 	}
+
+	public function from($email)
+	{
+		if (!$email) return $this->from;
+
+		$this->from = $email;
+		return $this;
+	}
 	
 	public function data($data)
 	{
-		if(gettype($data) == 'object' && get_class($data) == 'Closure'){
+		if (gettype($data) == 'object' && get_class($data) == 'Closure')
+		{
 			$buffer = "";
 			try{
-			ob_start(function($ob) use(&$buffer){
-				$buffer .= $ob;
-				return "";
-			});
-			$data = $data();
-			ob_end_clean();
-			} catch(AppDie $e){
+				ob_start();
+				$data = $data();
+				$buffer = ob_get_contents();
+				ob_end_clean();
+			} catch(Exception $e){
 				ob_end_clean();
 				throw $e;
 			}
 			
-			if(gettype($data) != "string") $data = $buffer;
+			if (gettype($data) != "string")
+			{
+				$data = $buffer;
+			}
 			unset($buffer);
 		}
 		$this->data = $data;
@@ -57,14 +78,19 @@ class Sendmail{
 	
 	public function send()
 	{
+		$this->headers["From"] = ($this->from ? $this->from : "system@$_SERVER[HTTP_HOST]");
+
 		$headers = [];
-		foreach($this->headers as $header => $value){
+		foreach ($this->headers as $header => $value)
+		{
 			$headers[] = "$header: $value";
 		}
 		$headers = implode("\r\n", $headers);
+
 		foreach($this->dest as $to){
 			@mail($to, $this->theme, $this->data, $headers);
 		}
+
 		return $this;
 	}
 	
