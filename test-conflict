@@ -1,4 +1,5 @@
 String 1
-String 2
-Try to test me
+String 2 (changed by developer)
+Try to test me (changed by both)
 
+Changed by both (conflict 2)
