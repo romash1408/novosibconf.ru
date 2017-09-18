@@ -1,4 +1,6 @@
-String 1
+String 1 (changed by server)
 String 2
-Try to test me
+Try to test me (changed by both)
+
+Changed by both (conflict 1)
 
