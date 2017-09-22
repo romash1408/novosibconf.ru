@@ -12,8 +12,13 @@ template_top();
 		</div>
 
 		<?php
-		if (isset($_GET["administrat"]) && $_GET["administrat"] == CONF["password"])
+		if (isset($_GET["administrat"]))
 		{
+			if ($_GET["administrat"] != CONF["password"])
+			{
+				die("Wrong password (should be like: <code>?administrat=&lt;password&gt;</code>). Access denied.");
+			}
+
 			$requests = [];
 			$req = $db->query("SELECT `id` FROM `request` ORDER BY `id` ASC");
 			while ($next = $req->fetch_assoc())
@@ -26,7 +31,22 @@ template_top();
 			$requests = $_SESSION["requests"];
 		}
 
-		for ($i = count($requests) - 1; $i >= 0; --$i) {
+		$workedRequests = [];
+
+		for ($i = count($requests) - 1; $i >= 0; --$i)
+		{
+			if (!array_key_exists($i, $requests)) continue;
+
+			if (array_key_exists($requests[$i], $workedRequests))
+			{
+				if (!isset($_GET["administrat"]))
+				{
+					unset($_SESSION["requests"][$i]);
+				}
+				continue;
+			}
+			$workedRequests[$requests[$i]] = true;
+
 			$request = $db->query("SELECT * FROM `request` WHERE `id` = {$requests[$i]}");
 			if (!$request) continue;
 
@@ -41,7 +61,7 @@ template_top();
 			preg_match("/^([a-z]+)-(-?[0-9]+)/", $request["payment"], $matches);
 			// There was a code checking paypal and card payments before.
 			// For now only 'place' payment is using.
-
+			
 			echo "Оплата $matches[2] р. (на месте)";
 			echo "</div>" .
 			"</div>";
