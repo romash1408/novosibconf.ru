@@ -1,2 +1,5 @@
 config.php
 logs/*
+launch.json
+vendor/*
+.vscode/*

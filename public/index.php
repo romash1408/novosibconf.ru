@@ -28,43 +28,19 @@ template_top();
 			<h2 id='speakersAnchor'>Спикеры</h2>
 		</div>
 		<div>
-			<speaker>
-				<img src='/img/speakers/speaker01.jpg' alt='speaker01' />
-				<h5>Старкова Марина</h5>
-				<p>Член Общественного Совета при УФСИН России по Тюменскому краю. Религовед.</p>
-			</speaker>
-			<speaker>
-				<img src='/img/speakers/speaker02.jpg' alt='speaker02' />
-				<h5>Мкртумян Армен</h5>
-				<p>Председатель Общественного совета при УФСИН России по Тюменскому краю. Пастор</p>
-			</speaker>
-			<speaker>
-				<img src='/img/speakers/speaker03.jpg' alt='speaker03' />
-				<h5>Каргапольцева Анна</h5>
-				<p>Президент ПРООСПП "Выбор". Заместитель председателя ОНК по Пермскому краю.</p>
-			</speaker>
-			<speaker>
-				<img src='/img/speakers/speaker04.jpg' alt='speaker04' />
-				<h5>Харив Сергей</h5>
-				<p>Руководитель Российского тюремного служения РОСХВЕ. Религовед. Москва.</p>
-			</speaker>
-		</div>
-		<div class='clear'>
-			<speaker>
-				<img src='/img/speakers/speaker05.jpg' alt='speaker05' />
-				<h5>Семиколенов Леонид</h5>
-				<p>Пастор тюремного служения. Новосибирск</p>
-			</speaker>
-			<speaker>
-				<img src='/img/speakers/speaker07.jpg' alt='speaker07' />
-				<h5>Уманский Игорь</h5>
-				<p>Пастор. Руководитель Тюремного служения. Ачинск.</p>
-			</speaker>
-			<speaker>
-				<img src='/img/speakers/speaker08.jpg' alt='speaker08' />
-				<h5>Зырянов Михаил</h5>
-				<p>Пастор. Красноярск</p>
-			</speaker>
+			<?php
+			foreach (INFO["speakers"] as $i => $speaker)
+			{
+				$id = sprintf("%02d", $i);
+				?>
+				<speaker>
+					<img src='/img/speakers/<?=PROJECT_NAME?>/speaker<?=$id?>.jpg' alt='speaker<?=$id?>' />
+					<h5><?=$speaker["name"]?></h5>
+					<p><?=$speaker["description"]?></p>
+				</speaker>
+				<?php
+			}
+			?>
 		</div>
 	</div>
 </div>
@@ -107,8 +83,12 @@ template_top();
 <div id='registration' class='wrapper'>
 	<div>
 		<div><h2 id='registrationAnchor'>Добровольное пожертвование</h2></div>
-		<div class='payment'><label>1800 .-</label><span>При регистрации до 10 сентября</span></div>
-		<div class='payment'><label>2000 .-</label><span>При регистрации после 10 сентября</span></div>
+		<?php
+		foreach (INFO["prices"] as $price)
+		{
+			echo "<div class='payment'><label>$price[amount] .-</label><span>$price[label]</span></div>";
+		}
+		?>
 		<div class='payment'><p>Добровольное пожертвование вносится на организацию конференции. На конференции вам будет предоставлено питание и кофе-брэйки. Добровольные пожертвования вносятся по месту проведения.</p></div>
 		<div class='clear'> </div>
 		<div class='text-center'>

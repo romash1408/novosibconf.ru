@@ -1,43 +1,62 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require_once("../main.php");
 
 $db = database();
 
-require_once("../Sendmail.php");
+$Sendmail = m_init_phpmailer();
+$__ROOT__ = __ROOT__;
+$INFO = INFO;
 
-function paied($email, $data, $payment){
-	(new Sendmail(<?=INFO["mail_getters"])) -> setTheme("Регистрация novosibconf.ru | {INFO['title']}") -> data( function() use($data, $payment)
+function paied($email, $data, $payment)
+{
+	global $Sendmail;
+	global $__ROOT__;
+	global $INFO;
+
+	foreach (CONF["mail_getters"][PROJECT_NAME] as $getter)
 	{
-		?>
-		<h2>Заявка с сайта <a href='<?=__ROOT__?>'><?=__ROOT__?></a> (<?=INFO['title']?>)</h2>
-		<h3>Данные пользователя:</h3>
-		<?=$data?>
-		<p><?=$payment?></p>
-		<?php
-	})->send();
+		$Sendmail->addAddress($getter);
+	}
+	$Sendmail->Subject = "Заявка с novosibconf.ru | " . INFO['title'];
+	$Sendmail->msgHTML(<<<HTML
+<h2>Заявка с сайта <a href='{$__ROOT__}'>{$__ROOT__}</a> ({$INFO['title']})</h2>
+<h3>Данные пользователя:</h3>
+{$data}
+<p>{$payment}</p>
+HTML
+	,  __DIR__);
+	$Sendmail->send();
+	$Sendmail->clearAddresses();
 	
-	(new Sendmail($email)) -> setTheme(<?=INFO['title']?>) -> data( function()
-	{
-		?>
-		<p>Поздравляем!<br />Вы успешно зарегистрированы на <a href='<?=__ROOT__?>'><?=__ROOT__?></a> (<?=INFO['title']?>)</a></p>
-		<p>Мы ждем вас <?=INFO["start"]["day"]?> <?=INFO["start"]["month"]?> по адресу:<br /><?=INFO["address"]?>.</p>
-		<p>Начало конференции в <?=explode(' ', INFO["start"]["time"], 2)[0]?>.</p>
-		<p>
-			Дополнительная информация по телефону:<br />
-			<?php
-			foreach (INFO["phones"] as $name => $phone)
-			{
-				echo "<a href='tel:$phone'>$phone</a> ($name).";
-			}
-			?>
-		</p>
-		<?php
-	})->send();
+
+	$startTime = explode(' ', INFO["start"]["time"], 2)[0];
+	$phones = implode("<br />", array_map(function($name, $phone){
+		return "<a href='tel:$phone'>$phone</a> ($name).";
+	}, array_keys(INFO["phones"]), INFO["phones"]));
+
+	$Sendmail->addAddress($email);
+	$Sendmail->Subject = "Регистрация на novosibconf.ru | " . INFO['title'];
+	$Sendmail->msgHTML(<<<HTML
+<p>Поздравляем!<br />Вы успешно зарегистрированы на <a href='{$__ROOT__}'>{$__ROOT__}</a> ({$INFO['title']})</a></p>
+<p>Мы ждем вас {$INFO["start"]["day"]} {$INFO["start"]["month"]} по адресу:<br />{$INFO["address"]}.</p>
+<p>Начало конференции в {$startTime}.</p>
+<p>
+	Дополнительная информация по телефону:<br />
+	{$phones}
+</p>
+HTML
+	, __DIR__);
+	$Sendmail->send();
+	$Sendmail->clearAddresses();
 }
 
-/*Find or create request*/
-if(isset($_GET["request"])){
-	$request = $db->query("SELECT * FROM `request` WHERE `hash` = '".$db->real_escape_string($_GET["request"])."'");
+/* Find or create request */
+if (isset($_GET["request"]))
+{
+	$request = $db->query("SELECT * FROM `request` WHERE `hash` = '".$db->real_escape_string($_GET[request])."'");
 } else {
 	$info = [];
 	if (!$_POST["name"] || !$_POST["phone"] || !$_POST["email"] || !$_POST["Город"])
@@ -73,18 +92,18 @@ if(isset($_GET["request"])){
 	if (!($request = $db->query("SELECT * FROM `request` WHERE `hash`='$hash'")->fetch_assoc()))
 	{
 		$price = -1;
-		foreach (INFO["prices"] as $time => $price)
+		foreach (INFO["prices"] as $time => $priceInfo)
 		{
 			if (time() < strtotime($time)) {
-				$price = 1800;
+				$price = $priceInfo["amount"];
 				break;
 			}
 		}
 
-		if ($price == -1)
+		/*if ($price == -1)
 		{
 			die("Регистрация закрыта");
-		}
+		}*/
 		
 		$info = $db->real_escape_string($info);
 		$email = $db->real_escape_string($_POST["email"]);
@@ -93,15 +112,21 @@ if(isset($_GET["request"])){
 		$db->query("INSERT INTO `request` (`email`, `data`, `payment`, `hash`) VALUES ('$email', '$info', '$method-$price', '$hash')") or die($db->error);
 		$request = $db->insert_id;
 		$request = $db->query("SELECT * FROM `request` WHERE `id` = $request")->fetch_assoc();
-		
-		(new Sendmail($request["email"])) -> setTheme("Регистрация novosibconf.ru | {INFO['title']}")->data(function() use($request){
-			?>
-			<p>Вы начали регистрацию на <a href='<?=__ROOT__?>'><?=__ROOT__?></a> (<?=INFO['title']?>).</p>
-			<p>Информация о вашей заявке доступна на странице: <a href='<?=__ROOT__?>/request.php?request=<?=$request["hash"]?>'><?=__ROOT__?>/request.php?request=<?=$request["hash"]?></a></p>
-			<?php
-		})->send();
 
-		paied($request["email"], $info, "Оплата на месте в размере <b>$price руб.</b>");
+		$Sendmail->addAddress($request["email"]);
+		$Sendmail->Subject = "Регистрация на novosibconf.ru | " . INFO['title'];
+		$Sendmail->msgHTML(<<<HTML
+<p>Вы начали регистрацию на <a href='{$__ROOT__}'>{$__ROOT__}</a> ({$INFO['title']}).</p>
+<p>Информация о вашей заявке доступна на странице: <a href='{$__ROOT__}/request.php?request={$request["hash"]}'>{$__ROOT__}/request.php?request={$request["hash"]}</a></p>
+HTML
+		, __DIR__);
+		$Sendmail->send();
+		$Sendmail->clearAddresses();
+
+		if ($method == "place")
+		{
+			paied($request["email"], $info, "Оплата на месте в размере <b>$price руб.</b>");
+		}
 	}
 }
 

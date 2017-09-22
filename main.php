@@ -1,8 +1,10 @@
 <?php
 
+require_once("vendor/autoload.php");
+
 session_start();
 
-if (!is_array($_SESSION["requests"]))
+if (!isset($_SESSION["requests"]))
 {
 	$_SESSION["requests"] = [];
 }
@@ -19,14 +21,12 @@ $protocol = (
 );
 define('__ROOT__', "$protocol://$_SERVER[HTTP_HOST]");
 
-function m_array_first(&$arr)
-{
-	list($key) = array_keys($arr);
-	return $arr[$key];
-}
-
 function template_top()
 {
+
+	$phone = INFO["phones"];
+	$phone = array_shift($phone);
+
 	?>
 	<!DOCTYPE html>
 	<html>
@@ -51,20 +51,24 @@ function template_top()
 						<a href='/##data' data-anchor='#data'><span>Расписание</span></a>
 						<a href='/##registration' data-anchor='#registration'><span>Регистрация</span></a>
 					</div>
-					<a class='phone' href='tel:<?=m_array_first(INFO["phones"])?>'><?=m_array_first(INFO["phones"])?></a>
+					<a class='phone' href='tel:<?=$phone?>'><?=$phone?></a>
 				</div>
 			</header>
 	<?php
 }
 
 function template_bottom(){
+
 	global $_SCRIPTS;
+	$phone = INFO["phones"];
+	$phone = array_shift($phone);
+
 	?>
 			<footer class='wrapper'>
 				<div>
 					<a href='/'><?=file_get_contents("img/logo.svg")?></a>
 					<div style='float: right'>
-						<a class='phone' href='tel:<?=m_array_first(INFO["phones"])?>'><?=m_array_first(INFO["phones"])?></a>
+						<a class='phone' href='tel:<?=$phone?>'><?=$phone?></a>
 					</div>
 					<div><small><?=INFO["footer_info"]?></small></div>
 				</div>
@@ -105,6 +109,60 @@ function database(){
 		$db = mysqli_connect(CONF["db"]["server"], CONF["db"]["user"], CONF["db"]["password"], CONF["db"]["db"]) or die("Coudn't connect to database");
 	}
 	return $db;
+}
+
+function m_init_phpmailer($config = null)
+{
+	if ($config === null)
+	{
+		$config = CONF["sendmail"];
+	}
+
+	$config = array_merge([
+		"type" => "mail",
+		"charset" => "UTF-8",
+		"html" => false,
+		"debug" => false,
+		"from" => "system@$_SERVER[HTTP_HOST]",
+	], $config);
+
+	$mailer = new \PHPMailer\PHPMailer\PHPMailer($config["debug"]);
+	$mailer->isHTML($config["html"]);
+	$mailer->setFrom($config["from"]);
+	$mailer->setLanguage("ru");
+	$mailer->Charset = $config["charset"];
+
+	switch ($config["type"])
+	{
+	case "mail":
+		$mailer->isMail();
+		break;
+
+	case "smtp":
+		$config = array_merge([
+			"port" => 21,
+			"secure" => '',
+		], $config);
+
+		$mailer->isSMTP();
+		$mailer->Host = $config["host"];
+		$mailer->Port = $config["port"];
+		$mailer->SMTPSecure = $config["secure"];
+
+		if (isset($config["user"]) && isset($config["password"]))
+		{
+			$mailer->SMTPAuth = true;
+			$mailer->Username = $config["user"];
+			$mailer->Password = $config["password"];
+
+		} else {
+
+			$mailer->SMTPAuth = false;
+		}
+		break;
+	}
+
+	return $mailer;
 }
 
 ?>
