@@ -100,10 +100,10 @@ if (isset($_GET["request"]))
 			}
 		}
 
-		/*if ($price == -1)
+		if ($price == -1)
 		{
 			die("Регистрация закрыта");
-		}*/
+		}
 		
 		$info = $db->real_escape_string($info);
 		$email = $db->real_escape_string($_POST["email"]);
